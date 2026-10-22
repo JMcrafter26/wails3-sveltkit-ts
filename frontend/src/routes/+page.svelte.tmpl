@@ -1,0 +1,59 @@
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import { Events } from '@wailsio/runtime';
+	import { GreetService } from '../../bindings/{{js .ModulePath}}';
+
+	let name = $state('');
+	let greeting = $state('');
+	let time = $state('Waiting for Go...');
+
+	onMount(() => {
+		return Events.On('time', (event) => {
+			time = String(event.data);
+		});
+	});
+
+	async function greet() {
+		try {
+			greeting = await GreetService.Greet(name.trim() || 'anonymous');
+		} catch (error) {
+			greeting = `Greet failed: ${String(error)}`;
+		}
+	}
+
+	function handleSubmit(event: SubmitEvent) {
+		event.preventDefault();
+		void greet();
+	}
+</script>
+
+<svelte:head>
+	<title>Home</title>
+</svelte:head>
+
+<section class="hero">
+	<p class="eyebrow">Wails v3 + SvelteKit</p>
+	<h1>Hello from Go and Svelte.</h1>
+	<p class="lede">
+		This starter calls a Go service binding and listens for a custom Go event.
+	</p>
+</section>
+
+<section class="card">
+	<form class="greet-form" onsubmit={handleSubmit}>
+		<label for="name">Your name</label>
+		<div class="input-row">
+			<input id="name" bind:value={name} placeholder="anonymous" autocomplete="off" />
+			<button type="submit">Greet</button>
+		</div>
+	</form>
+
+	{#if greeting}
+		<p class="result" role="status">{greeting}</p>
+	{/if}
+
+	<p class="event">
+		<span class="event-label">Go time</span>
+		<span>{time}</span>
+	</p>
+</section>

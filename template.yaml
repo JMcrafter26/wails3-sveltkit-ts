@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://v3.wails.io/schemas/template.v3.json
+name: SvelteKit + TypeScript
+shortname: sveltekit-ts
+author: Cufiy
+description: SvelteKit 3 + TypeScript + Vite + pnpm for Wails v3
+helpurl: ""
+version: v0.1.0
+wailsVersion: 3
+typescript: true
